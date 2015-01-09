@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Output</title>
+</head>
+<body>
+
+<h1>Output</h1>
+User ID = {{ id }}<br>
+Token = {{ token }}<br>
+Code = {{ code }}<br>
+
+<textarea id="message"></textarea>
+<button id="sendButton">Send</button>
+
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script>
+    // "token" will get replaced if we use the jinja2 templating
+    var channel = new goog.appengine.Channel('{{ token }}');
+    var socket = channel.open();
+    socket.onopen = function () {
+        console.log("socket: open");
+    };
+    socket.onmessage = function (e) {
+        console.log("socket: message");
+        console.log("editor said: " + e.data);
+    };
+    socket.onerror = function () {
+        console.log("socket: error");
+    };
+    socket.onclose = function () {
+        console.log("socket: close");
+    };
+
+    var id = {{ id }};
+    var role = "{{ role }}";  // could also grab this from the query string
+
+    var sendMessage = function(path, message) {
+        path += "?role=" + role + "&message=" + message;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', path, true);
+        xhr.send();
+    };
+
+    var sendButton = document.getElementById("sendButton");
+    var textarea = document.getElementById("message");
+
+    sendButton.addEventListener("click", function () {
+        sendMessage("/update", textarea.value);
+    });
+
+</script>
+</body>
+</html>
