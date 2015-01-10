@@ -31,7 +31,7 @@ class EditorPage(webapp2.RequestHandler):
     def get(self):
         uid = users.get_current_user().user_id()
 
-        template = jinja_environment.get_template("external/live-editor/demos/simple/index.html")
+        template = jinja_environment.get_template("demos/simple/index.html")
         template_values = {
             'token': channel.create_channel(uid + "_editor"),
             'id': uid,
@@ -45,10 +45,18 @@ class EditorPage(webapp2.RequestHandler):
         uid = users.get_current_user().user_id()    # it would be nice to inject if this possible
 
         if self.request.body == 'connected':
-            program = Program.get_by_id(uid)
-            channel.send_message(uid + "_editor", json.dumps(program.code))
+            # program = Program.get_by_id(uid)
+            # channel.send_message(uid + "_editor", json.dumps(program.code))
+            channel.send_message(uid + "_editor", self.request.body)
+            print "connected"
+            pass
         else:
             # forward the message
+            body = json.loads(self.request.body)
+            if 'code' in body:
+                program = Program(id=uid, code=body)
+                program.put()
+                print "stored code"
             print self.request.body
             channel.send_message(uid + "_output", self.request.body)
 
@@ -59,7 +67,7 @@ class OutputPage(webapp2.RequestHandler):
     def get(self):
         uid = users.get_current_user().user_id()
 
-        template = jinja_environment.get_template("external/live-editor/demos/simple/output.html")
+        template = jinja_environment.get_template("demos/simple/output.html")
         template_values = {
             'token': channel.create_channel(uid + "_output"),
             'id': uid,

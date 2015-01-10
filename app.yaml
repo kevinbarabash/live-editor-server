@@ -1,4 +1,4 @@
-application: channel-test
+application: elite-clover-821
 version: 1
 runtime: python27
 api_version: 1
@@ -10,7 +10,7 @@ handlers:
   upload: favicon\.ico
 
 - url: /build
-  static_dir: external/live-editor/build
+  static_dir: build
 
 - url: .*
   script: main.app
