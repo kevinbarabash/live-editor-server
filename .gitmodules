@@ -1,0 +1,3 @@
+[submodule "external/live-editor"]
+	path = external/live-editor
+	url = https://github.com/kevinb7/live-editor
