@@ -31,17 +31,10 @@ class EditorPage(webapp2.RequestHandler):
     def get(self):
         uid = users.get_current_user().user_id()
 
-        # TODO: grab code from the DataStore
-        # TODO: have some canned programs that already in the DataStore
-        code = 'console.log("hello, world!");'
-        prog = Program(id=uid, code=code)
-        prog.put()
-
-        template = jinja_environment.get_template('editor.html')
+        template = jinja_environment.get_template("external/live-editor/demos/simple/index.html")
         template_values = {
             'token': channel.create_channel(uid + "_editor"),
             'id': uid,
-            'code': code,
             'logout_url': users.create_logout_url(self.request.uri)
         }
 
@@ -50,11 +43,14 @@ class EditorPage(webapp2.RequestHandler):
     @authenticate
     def post(self):
         uid = users.get_current_user().user_id()    # it would be nice to inject if this possible
-        body = json.loads(self.request.body)
-        print body
 
-        data = {"message": body["message"], "time": body["time"]}
-        channel.send_message(uid + "_output", json.dumps(data))
+        if self.request.body == 'connected':
+            program = Program.get_by_id(uid)
+            channel.send_message(uid + "_editor", json.dumps(program.code))
+        else:
+            # forward the message
+            print self.request.body
+            channel.send_message(uid + "_output", self.request.body)
 
 
 class OutputPage(webapp2.RequestHandler):
@@ -63,14 +59,10 @@ class OutputPage(webapp2.RequestHandler):
     def get(self):
         uid = users.get_current_user().user_id()
 
-        prog = Program.get_by_id(uid)
-        code = prog.code
-
-        template = jinja_environment.get_template('output.html')
+        template = jinja_environment.get_template("external/live-editor/demos/simple/output.html")
         template_values = {
             'token': channel.create_channel(uid + "_output"),
             'id': uid,
-            'code': code,
             'logout_url': users.create_logout_url(self.request.uri)
         }
 
@@ -79,11 +71,14 @@ class OutputPage(webapp2.RequestHandler):
     @authenticate
     def post(self):
         uid = users.get_current_user().user_id()    # it would be nice to inject if this possible
-        body = json.loads(self.request.body)
-        print body
 
-        data = {"message": body["message"], "time": body["time"]}
-        channel.send_message(uid + "_editor", json.dumps(data))
+        if self.request.body == 'connected':
+            program = Program.get_by_id(uid)
+            channel.send_message(uid + "_output", json.dumps(program.code))
+        else:
+            # forward the message
+            print self.request.body
+            channel.send_message(uid + "_editor", self.request.body)
 
 
 jinja_environment = jinja2.Environment(

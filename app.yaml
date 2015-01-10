@@ -9,6 +9,9 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /build
+  static_dir: external/live-editor/build
+
 - url: .*
   script: main.app
 
