@@ -10,9 +10,9 @@ demos/simple/output.html.
 The CSS for the live editor has been updated so that the editor takes up more of
 the window.  The "Oh noes!" now appears above the editor as opposed to beside it.
 
-[editor in Chrome](https://raw.github.com/kevinb7/live-editor-server/master/editor.png)
+![editor in Chrome](https://raw.github.com/kevinb7/live-editor-server/master/editor.png)
 
-[output in iPad simulator](https://raw.github.com/kevinb7/live-editor-server/master/output.png)
+![output in iPad simulator](https://raw.github.com/kevinb7/live-editor-server/master/output.png)
 
 
 ## Future Work ##
