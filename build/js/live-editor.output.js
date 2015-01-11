@@ -348,10 +348,10 @@ window.LiveEditorOutput = Backbone.View.extend({
             this.socket = channel.open();
             this.socket.onopen = function () {
                 console.log("socket: open");
+                self.sendChannelMessage("/output", "connected")
             };
             this.socket.onmessage = function (e) {
                 console.log("socket: message");
-                console.log("output said: %o", JSON.parse(e.data));
                 self.handleData(JSON.parse(e.data));
             };
             this.socket.onerror = function () {
@@ -371,8 +371,6 @@ window.LiveEditorOutput = Backbone.View.extend({
                     xhr.send(value);
                 }
             };
-
-            this.sendChannelMessage("/output", "connected");
         }
 
         // socket.io code
