@@ -48,7 +48,8 @@ class EditorPage(webapp2.RequestHandler):
         if 'code' in body:
             program = Program(id=uid, code=body)
             program.put()
-            print body
+            # print body
+            # TODO(kevinb7) add debugging switch when running locally only
         channel.send_message(uid + "_output", self.request.body)
 
 
@@ -83,32 +84,11 @@ class OutputPage(webapp2.RequestHandler):
             channel.send_message(uid + "_editor", self.request.body)
 
 
-class ChannelConnected(webapp2.RequestHandler):
-
-    # this only gets called on the first load in a tab/window
-    # if you reload it won't get called so this isn't really that useful
-    # because you usually want to get a "connected" message every time you reload the app
-    # so that you can do whatever additional initialization is necessary
-
-    def post(self):
-        client_id = self.request.get('from')
-        print "connected to %s" % client_id
-
-
-class ChannelDisconnected(webapp2.RequestHandler):
-
-    def post(self):
-        client_id = self.request.get('from')
-        print "connected from %s" % client_id
-
-
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
 
 app = webapp2.WSGIApplication([
     ('/editor', EditorPage),
-    ('/output', OutputPage),
-    ('/_ah/channel/connected/', ChannelConnected),
-    ('/_ah/channel/disconnected', ChannelDisconnected)
+    ('/output', OutputPage)
 ], debug=True)

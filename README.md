@@ -20,6 +20,8 @@ the window.  The "Oh noes!" now appears above the editor as opposed to beside it
 
 ![editor in Chrome](https://raw.github.com/kevinb7/live-editor-server/master/editor.png)
 
+Here's a screenshot of the program above running in the iOS simulator:
+
 ![output in iPad simulator](https://raw.github.com/kevinb7/live-editor-server/master/output.png)
 
 
@@ -36,3 +38,6 @@ the window.  The "Oh noes!" now appears above the editor as opposed to beside it
   time.
 - integrate into the Khan Academy server code so that users can load existing
   programs
+- automated testing
+- proper logging
+- improve rendering quality on retina devices
