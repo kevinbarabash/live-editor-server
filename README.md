@@ -2,6 +2,14 @@
 Server that allows live-editor to communicate with the output canvas in a 
 separate tab, window, browser, or device.
 
+## Demo ##
+Make sure you sign in using the same user account when opening both links.  
+It may take a little bit of time for the program to start running the output 
+window.  If the editor is empty, that's okay... just write some code.  :)
+
+- <a href="http://elite-clover-821.appspot.com/editor" target="_blank">editor</a>
+- <a href="http://elite-clover-821.appspot.com/output" target="_blank">output</a>
+
 ## Implementation Details ##
 The server is written in Python.  It uses Google App Engine to server files and
 the Channel API to ferry messages between demos/simple/index.html and
@@ -28,11 +36,3 @@ the window.  The "Oh noes!" now appears above the editor as opposed to beside it
   time.
 - integrate into the Khan Academy server code so that users can load existing
   programs
-
-## Demo ##
-Make sure you sign in using the same user account when opening both links.  
-It may take a little bit of time for the program to start running the output 
-window.  If the editor is empty, that's okay... just write some code.  :)
-
-- [editor](http://elite-clover-821.appspot.com/editor)
-- [output](http://elite-clover-821.appspot.com/output)
