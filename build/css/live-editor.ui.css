@@ -15,7 +15,7 @@
     display: none;
     font-family: Helvetica;
     font-weight: normal;
-    left: 125px;
+    left: 132px;
     margin: auto;
     min-height: 40px;
     position: absolute;
@@ -43,6 +43,7 @@
 .tipbar .text-wrap {
     line-height: 1.4em;
     margin: 8px 8px 33px 8px;
+    pointer-events: all;
 }
 .tipbar .text-wrap .message {
     line-height: 20px;
@@ -153,7 +154,7 @@
     width: 100%;
 }
 .error-overlay {
-    background: rgba(255, 255, 255, 0.6);
+    /*background: rgba(255, 255, 255, 0.6);*/
     z-index: auto;
 }
 
@@ -167,6 +168,7 @@
 
 .scratchpad-wrap .scratchpad-canvas-wrap {
     float: right;
+    pointer-events: none;
 }
 
 .scratchpad-wrap .scratchpad-canvas-wrap  #output {
@@ -176,7 +178,7 @@
 }
 
 .scratchpad-wrap .scratchpad-editor-wrap {
-    margin-right: 412px;
+    /*margin-right: 412px;*/
     position: relative;
 }
 
@@ -190,8 +192,8 @@
     overflow: hidden;
 }
 
-.scratchpad-wrap .scratchpad-toolbar {
-    margin-top: 10px;
+.scratchpad-toolbar {
+    margin-bottom: 10px;
     min-height: 30px;
 }
 
@@ -332,7 +334,14 @@
 
 #output {
     height: 402px;
-    position: relative;
+    /*position: relative;*/
+    position: absolute;
+    margin-left: -405px;
+    z-index: 100;  /* so it's below the code */
+}
+
+.scratchpad-editor, .ace_tm {
+    background-color: transparent !important;
 }
 
 #output-frame,
@@ -390,3 +399,4 @@ button {
 button.hilite {
     box-shadow: 0 0 20px green;
 }
+

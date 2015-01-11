@@ -24,7 +24,6 @@ def authenticate(func):
     return func_wrapper
 
 
-# TODO: consider using factory pattern since EditorPage and OutputPage so similar
 class EditorPage(webapp2.RequestHandler):
 
     @authenticate
