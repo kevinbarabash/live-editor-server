@@ -11,7 +11,7 @@ window.  If the editor is empty, that's okay... just write some code.  :)
 - <a href="http://elite-clover-821.appspot.com/output" target="_blank">output</a>
 
 ## Implementation Details ##
-The server is written in Python.  It uses Google App Engine to server files and
+The server is written in Python.  It uses Google App Engine to serve files and
 the Channel API to ferry messages between demos/simple/index.html and
 demos/simple/output.html.
 
