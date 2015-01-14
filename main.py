@@ -9,9 +9,13 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 
 
+def user_key(uid):
+    return ndb.Key('Account', uid)
+
+
 class Program(ndb.Model):
-    key = ndb.StringProperty()
-    code = ndb.JsonProperty()
+    name = ndb.StringProperty()
+    code = ndb.StringProperty()
 
 
 def authenticate(func):
@@ -84,11 +88,67 @@ class OutputPage(webapp2.RequestHandler):
             channel.send_message(uid + "_editor", self.request.body)
 
 
+class ProgramList(webapp2.RequestHandler):
+
+    @authenticate
+    def get(self):
+        uid = users.get_current_user().user_id()
+        programs_query = Program.query(ancestor=user_key(uid))
+        programs = programs_query.fetch(10)
+
+        for p in programs:
+            print p.key.id()
+
+        template = jinja_environment.get_template("html/program_listing.html")
+        template_values = {
+            'programs': programs,
+            'logout_url': users.create_logout_url(self.request.uri)
+        }
+        self.response.out.write(template.render(template_values))
+
+
+class CreateProgram(webapp2.RequestHandler):
+
+    @authenticate
+    def get(self):
+        uid = users.get_current_user().user_id()
+        program = Program(parent=user_key(uid),
+                          name="test2",
+                          code="console.log('goodbye');")
+        program.put()
+
+        self.response.out.write("success!")
+    pass
+
+
+class ViewProgram(webapp2.RequestHandler):
+
+    @authenticate
+    def get(self):
+        uid = users.get_current_user().user_id()
+        pid = int(self.request.get("pid"))
+
+        program = Program.get_by_id(pid, parent=user_key(uid))
+
+        # equivalent method:
+        # key = ndb.Key('Account', uid, 'Program', pid)
+        # program = key.get()
+
+        if program:
+            self.response.out.write(program.code)
+        else:
+            self.response.out.write("no program with that id")
+    pass
+
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
 
 app = webapp2.WSGIApplication([
     ('/editor', EditorPage),
-    ('/output', OutputPage)
+    ('/output', OutputPage),
+    ('/program', ViewProgram),
+    ('/programs', ProgramList),
+    ('/create', CreateProgram)
 ], debug=True)

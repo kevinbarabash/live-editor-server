@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Program Listing</title>
+</head>
+<body>
+
+<h1>Program Listing</h1>
+
+<ul>
+    {% for program in programs %}
+    <li>
+        <a href="/program?pid={{ program.key.id() }}">{{ program.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
