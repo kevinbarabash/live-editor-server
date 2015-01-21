@@ -9,6 +9,12 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /dialog-polyfill
+  static_dir: bower_components/dialog-polyfill
+
+- url: /live-editor
+  static_dir: live-editor
+
 - url: /build
   static_dir: build
 

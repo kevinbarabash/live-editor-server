@@ -2,10 +2,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Live Editor Simple Demo</title>
-    <link rel="stylesheet" href="../../build/css/live-editor.core_deps.css"/>
-    <link rel="stylesheet" href="../../build/css/live-editor.audio.css"/>
-    <link rel="stylesheet" href="../../build/css/live-editor.tooltips.css"/>
-    <link rel="stylesheet" href="../../build/css/live-editor.ui.css"/>
+    <link rel="stylesheet" href="../../live-editor/css/live-editor.core_deps.css"/>
+    <link rel="stylesheet" href="../../live-editor/css/live-editor.audio.css"/>
+    <link rel="stylesheet" href="../../live-editor/css/live-editor.tooltips.css"/>
+    <link rel="stylesheet" href="../../live-editor/css/live-editor.ui.css"/>
     <style>
         body {
             padding: 20px;
@@ -32,13 +32,13 @@
     <div id="sample-live-editor"></div>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <!--<script src="/socket.io/socket.io.js"></script>-->
-    <script src="../../build/js/live-editor.core_deps.js"></script>
-    <script src="../../build/js/live-editor.editor_ace_deps.js"></script>
-    <script src="../../build/js/live-editor.audio.js"></script>
-    <script src="../../build/js/live-editor.shared.js"></script>
-    <script src="../../build/js/live-editor.tooltips.js"></script>
-    <script src="../../build/js/live-editor.ui.js"></script>
-    <script src="../../build/js/live-editor.editor_ace.js"></script>
+    <script src="../../live-editor/js/live-editor.core_deps.js"></script>
+    <script src="../../live-editor/js/live-editor.editor_ace_deps.js"></script>
+    <script src="../../live-editor/js/live-editor.audio.js"></script>
+    <script src="../../live-editor/js/live-editor.shared.js"></script>
+    <script src="../../live-editor/js/live-editor.tooltips.js"></script>
+    <script src="../../live-editor/js/live-editor.ui.js"></script>
+    <script src="../../live-editor/js/live-editor.editor_ace.js"></script>
 
     <script>
     window.liveEditor = new LiveEditor({
@@ -48,11 +48,11 @@
         height: 400,
         editorHeight: "80%",
         autoFocus: true,
-        workersDir: "../../build/workers/",
-        externalsDir: "../../build/external/",
-        imagesDir: "../../build/images/",
+        workersDir: "../../live-editor/workers/",
+        externalsDir: "../../live-editor/external/",
+        imagesDir: "../../live-editor/images/",
         execFile: "output.html",
-        jshintFile: "../../build/external/jshint/jshint.js"
+        jshintFile: "../../live-editor/external/jshint/jshint.js"
     });
     liveEditor.editor.on("change", function() {
         window.localStorage["test-code"] = liveEditor.editor.text();

@@ -3,10 +3,32 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Program Listing</title>
+    <style>
+
+        dialog button {
+            float: right;
+            margin-left: 10px;
+        }
+
+    </style>
+    <link rel="stylesheet" href="dialog-polyfill/dialog-polyfill.css"/>
+    <script src="dialog-polyfill/dialog-polyfill.js"></script>
 </head>
 <body>
 
 <h1>Program Listing</h1>
+
+<button id="new_button">New Program</button>
+<dialog>
+    <div>
+        Name: <input type="text" id="program_name">
+    </div>
+    <br>
+    <div>
+        <button id="cancel">Cancel</button>
+        <button id="create">Create</button>
+    </div>
+</dialog>
 
 <ul>
     {% for program in programs %}
@@ -18,3 +40,4 @@
 
 </body>
 </html>
+<script src="build/program_listing.js"></script>

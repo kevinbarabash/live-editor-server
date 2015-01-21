@@ -15,7 +15,7 @@ def user_key(uid):
 
 class Program(ndb.Model):
     name = ndb.StringProperty()
-    code = ndb.StringProperty()
+    code = ndb.JsonProperty()
 
 
 def authenticate(func):
@@ -110,15 +110,17 @@ class ProgramList(webapp2.RequestHandler):
 class CreateProgram(webapp2.RequestHandler):
 
     @authenticate
-    def get(self):
+    def post(self):
         uid = users.get_current_user().user_id()
-        program = Program(parent=user_key(uid),
-                          name="test2",
-                          code="console.log('goodbye');")
-        program.put()
+        name = json.loads(self.request.body)["name"]
 
-        self.response.out.write("success!")
-    pass
+        if name:
+            program = Program(parent=user_key(uid),
+                              name=name,
+                              code="rect(100, 100, 100, 100);")
+            program.put()
+
+            self.response.set_status(200)
 
 
 class ViewProgram(webapp2.RequestHandler):
