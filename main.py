@@ -51,7 +51,8 @@ class EditorPage(webapp2.RequestHandler):
                 'id': uid,
                 'logout_url': users.create_logout_url(self.request.uri),
                 'code': code,
-                'pid': pid
+                'pid': pid,
+                'title': program.name
             }
             self.response.out.write(template.render(template_values))
         else:
@@ -108,7 +109,7 @@ class ProgramList(webapp2.RequestHandler):
         for p in programs:
             print p.key.id()
 
-        template = jinja_environment.get_template("html/program_listing.html")
+        template = jinja_environment.get_template("html/program_list.html")
         template_values = {
             'programs': programs,
             'logout_url': users.create_logout_url(self.request.uri)

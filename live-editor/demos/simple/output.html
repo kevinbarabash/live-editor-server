@@ -8,16 +8,23 @@
         var token = "{{ token }}";
     </script>
     <style>
-        #logout {
+        #header {
             position: absolute;
-            left: 10px;
-            top: 10px;
             z-index: 1000;
+            width: 100%;
+            padding: 18px 28px;
+            box-sizing: border-box;
+        }
+
+        #logout {
+            float:right;
         }
     </style>
 </head>
 <body>
-    <a id="logout" href="{{ logout_url }}">logout</a>
+    <div id="header">
+        <a id="logout" href="{{ logout_url }}">logout</a>
+    </div>
     <div id="live-editor-output"></div>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <!--<script src="/socket.io/socket.io.js"></script>-->

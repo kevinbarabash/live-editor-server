@@ -8,18 +8,24 @@
     <link rel="stylesheet" href="../../build/css/live-editor.ui.css"/>
     <style>
         body {
-            padding: 20px;
+            padding: 10px 20px 20px 20px;
         }
 
         h1 {
             padding: 0;
-            margin: 0 0 20px 0;
+            margin: 10px 0 10px 0;
         }
+
         #sample-live-editor {
             padding: 0;
         }
+
         iframe {
             border: none;
+        }
+
+        #saveButton {
+            margin-bottom: 5px;
         }
     </style>
     <script>
@@ -27,8 +33,11 @@
     </script>
 </head>
 <body>
-    <a href="{{ logout_url }}">logout</a>
-    <h1>Live Editor Example</h1>
+    <div>
+        <a href="/programs">Program List</a>
+        <a href="{{ logout_url }}" style="float:right;">logout</a>
+    </div>
+    <h1>{{ title }}</h1>
     <button id="saveButton">Save</button>
     <div id="sample-live-editor"></div>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
@@ -46,6 +55,7 @@
         if (code === "") {
             code = window.localStorage["test-code"] || "rect(10, 10, 100, 100);";
         }
+        var dirty = false;
 
         window.liveEditor = new LiveEditor({
             el: $("#sample-live-editor"),
@@ -60,9 +70,12 @@
             execFile: "output.html",
             jshintFile: "../../build/external/jshint/jshint.js"
         });
+
         liveEditor.editor.on("change", function() {
+            dirty = true;
             window.localStorage["test-code"] = liveEditor.editor.text();
         });
+
         ScratchpadAutosuggest.init(liveEditor.editor.editor);
 
         var saveButton = document.getElementById("saveButton");
@@ -84,6 +97,15 @@
             console.log(obj);
             xhr.send(JSON.stringify(obj));
         };
+
+        window.addEventListener("beforeunload", function (e) {
+            if (dirty) {
+                var message = "You've edited your program.  Your changes will be lost if you don't save them";
+
+                (e || window.event).returnValue = message; //Gecko + IE
+                return message; //Gecko + Webkit, Safari, Chrome etc.
+            }
+        });
     </script>
 </body>
 </html>
