@@ -34,7 +34,8 @@ class EditorPage(webapp2.RequestHandler):
     def get(self):
         uid = users.get_current_user().user_id()
 
-        template = jinja_environment.get_template("demos/simple/index.html")
+        path = "live-editor/demos/simple/index.html"
+        template = jinja_environment.get_template(path)
         template_values = {
             'token': channel.create_channel(uid + "_editor"),
             'id': uid,
@@ -63,7 +64,8 @@ class OutputPage(webapp2.RequestHandler):
     def get(self):
         uid = users.get_current_user().user_id()
 
-        template = jinja_environment.get_template("demos/simple/output.html")
+        path = "live-editor/demos/simple/output.html"
+        template = jinja_environment.get_template(path)
         template_values = {
             'token': channel.create_channel(uid + "_output"),
             'id': uid,
