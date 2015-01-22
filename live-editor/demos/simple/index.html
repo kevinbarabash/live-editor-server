@@ -29,6 +29,7 @@
 <body>
     <a href="{{ logout_url }}">logout</a>
     <h1>Live Editor Example</h1>
+    <button id="saveButton">Save</button>
     <div id="sample-live-editor"></div>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <!--<script src="/socket.io/socket.io.js"></script>-->
@@ -41,23 +42,48 @@
     <script src="../../build/js/live-editor.editor_ace.js"></script>
 
     <script>
-    window.liveEditor = new LiveEditor({
-        el: $("#sample-live-editor"),
-        code: window.localStorage["test-code"] || "rect(10, 10, 100, 100);",
-        width: 400,
-        height: 400,
-        editorHeight: "80%",
-        autoFocus: true,
-        workersDir: "../../live-editor/workers/",
-        externalsDir: "../../live-editor/external/",
-        imagesDir: "../../live-editor/images/",
-        execFile: "output.html",
-        jshintFile: "../../live-editor/external/jshint/jshint.js"
-    });
-    liveEditor.editor.on("change", function() {
-        window.localStorage["test-code"] = liveEditor.editor.text();
-    });
-    ScratchpadAutosuggest.init(liveEditor.editor.editor);
+        var code = "{{ code }}";
+        if (code === "") {
+            code = window.localStorage["test-code"] || "rect(10, 10, 100, 100);";
+        }
+
+        window.liveEditor = new LiveEditor({
+            el: $("#sample-live-editor"),
+            code: code,
+            width: 400,
+            height: 400,
+            editorHeight: "80%",
+            autoFocus: true,
+            workersDir: "../../build/workers/",
+            externalsDir: "../../build/external/",
+            imagesDir: "../../build/images/",
+            execFile: "output.html",
+            jshintFile: "../../build/external/jshint/jshint.js"
+        });
+        liveEditor.editor.on("change", function() {
+            window.localStorage["test-code"] = liveEditor.editor.text();
+        });
+        ScratchpadAutosuggest.init(liveEditor.editor.editor);
+
+        var saveButton = document.getElementById("saveButton");
+        saveButton.onclick = function (e) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/save", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log("we're good to go");
+                } else {
+                    console.log("something went wrong");
+                }
+            };
+
+            var code = liveEditor.editor.editor.getSession().getValue();
+            var pid = "{{ pid }}";
+            var obj = { code: code, pid: pid };
+            console.log(obj);
+            xhr.send(JSON.stringify(obj));
+        };
     </script>
 </body>
 </html>

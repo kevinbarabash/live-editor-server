@@ -33,28 +33,35 @@ class EditorPage(webapp2.RequestHandler):
     @authenticate
     def get(self):
         uid = users.get_current_user().user_id()
+        pid = int(self.request.get("pid"))
 
-        path = "live-editor/demos/simple/index.html"
-        template = jinja_environment.get_template(path)
-        template_values = {
-            'token': channel.create_channel(uid + "_editor"),
-            'id': uid,
-            'logout_url': users.create_logout_url(self.request.uri),
-        }
+        program = Program.get_by_id(pid, parent=user_key(uid))
 
-        self.response.out.write(template.render(template_values))
+        # equivalent method:
+        # key = ndb.Key('Account', uid, 'Program', pid)
+        # program = key.get()
+
+        code = program.code.replace("\n", "\\n").replace("\"", "\\\"")
+
+        if program:
+            path = "live-editor/demos/simple/index.html"
+            template = jinja_environment.get_template(path)
+            template_values = {
+                'token': channel.create_channel(uid + "_editor"),
+                'id': uid,
+                'logout_url': users.create_logout_url(self.request.uri),
+                'code': code,
+                'pid': pid
+            }
+            self.response.out.write(template.render(template_values))
+        else:
+            self.response.out.write("no program with that id")
 
     @authenticate
     def post(self):
         uid = users.get_current_user().user_id()    # it would be nice to inject if this possible
 
-        # forward the message
-        body = json.loads(self.request.body)
-        if 'code' in body:
-            program = Program(id=uid, code=body)
-            program.put()
-            # print body
-            # TODO(kevinb7) add debugging switch when running locally only
+        # forward the message to the output
         channel.send_message(uid + "_output", self.request.body)
 
 
@@ -125,24 +132,26 @@ class CreateProgram(webapp2.RequestHandler):
             self.response.set_status(200)
 
 
-class ViewProgram(webapp2.RequestHandler):
+class SaveProgram(webapp2.RequestHandler):
 
     @authenticate
-    def get(self):
+    def post(self):
         uid = users.get_current_user().user_id()
-        pid = int(self.request.get("pid"))
+        body = json.loads(self.request.body)
 
-        program = Program.get_by_id(pid, parent=user_key(uid))
+        print body
 
-        # equivalent method:
-        # key = ndb.Key('Account', uid, 'Program', pid)
-        # program = key.get()
+        if 'pid' in body:
+            pid = int(body['pid'])
+            program = Program.get_by_id(pid, parent=user_key(uid))
 
-        if program:
-            self.response.out.write(program.code)
-        else:
-            self.response.out.write("no program with that id")
-    pass
+            if not program:
+                self.response.set_status(500)
+                self.response.out.write("couldn't retrieve program")
+
+            if 'code' in body:
+                program.code = body['code']
+                program.put()
 
 
 jinja_environment = jinja2.Environment(
@@ -152,7 +161,7 @@ jinja_environment = jinja2.Environment(
 app = webapp2.WSGIApplication([
     ('/editor', EditorPage),
     ('/output', OutputPage),
-    ('/program', ViewProgram),
     ('/programs', ProgramList),
-    ('/create', CreateProgram)
+    ('/create', CreateProgram),
+    ('/save', SaveProgram)
 ], debug=True)
