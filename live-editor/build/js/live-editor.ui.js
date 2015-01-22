@@ -900,6 +900,8 @@ window.LiveEditor = Backbone.View.extend({
         }
 
         this.uniq = Math.floor(Math.random()*100);
+        
+        this.pid = options.pid;
 
         this.workersDir = this._qualifyURL(options.workersDir);
         this.externalsDir = this._qualifyURL(options.externalsDir);
@@ -979,7 +981,8 @@ window.LiveEditor = Backbone.View.extend({
             imagesDir: this.imagesDir,
             externalsDir: this.externalsDir,
             workersDir: this.workersDir,
-            type: this.editorType
+            type: this.editorType,
+            pid: this.pid
         });
 
         this.tipbar = new TipBar({
@@ -1936,7 +1939,14 @@ window.LiveEditor = Backbone.View.extend({
         });
 
         // Ask the frame for a screenshot
-        this.postFrame({ screenshot: true });
+        var request = { screenshot: true, pid: this.pid };
+        if (this.sendChannelMessage) {
+            this.sendChannelMessage("/editor", request)
+        } else if (typeof io === "function") {
+            this.socket.emit('message', request);
+        } else {
+            this.postFrame(request);
+        }
     },
 
     updateCanvasSize: function(width, height) {
@@ -1955,22 +1965,23 @@ window.LiveEditor = Backbone.View.extend({
         });
     },
 
-    getScreenshot: function(callback) {
-        // Unbind any handlers this function may have set for previous
-        // screenshots
-        $(window).off("message.getScreenshot");
-
-        // We're only expecting one screenshot back
-        $(window).on("message.getScreenshot", function(e) {
-            // Only call if the data is actually an image!
-            if (/^data:/.test(e.originalEvent.data)) {
-                callback(e.originalEvent.data);
-            }
-        });
-
-        // Ask the frame for a screenshot
-        this.postFrame({ screenshot: true });
-    },
+    // don't need this duplicate
+    //getScreenshot: function(callback) {
+    //    // Unbind any handlers this function may have set for previous
+    //    // screenshots
+    //    $(window).off("message.getScreenshot");
+    //
+    //    // We're only expecting one screenshot back
+    //    $(window).on("message.getScreenshot", function(e) {
+    //        // Only call if the data is actually an image!
+    //        if (/^data:/.test(e.originalEvent.data)) {
+    //            callback(e.originalEvent.data);
+    //        }
+    //    });
+    //
+    //    // Ask the frame for a screenshot
+    //    this.postFrame({ screenshot: true });
+    //},
 
     undo: function() {
         this.editor.undo();

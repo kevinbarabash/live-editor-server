@@ -39,6 +39,7 @@
     </div>
     <h1>{{ title }}</h1>
     <button id="saveButton">Save</button>
+    <button id="screenshotButton">Screenshot</button>
     <div id="sample-live-editor"></div>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <!--<script src="/socket.io/socket.io.js"></script>-->
@@ -68,7 +69,8 @@
             externalsDir: "../../build/external/",
             imagesDir: "../../build/images/",
             execFile: "output.html",
-            jshintFile: "../../build/external/jshint/jshint.js"
+            jshintFile: "../../build/external/jshint/jshint.js",
+            pid: "{{ pid }}"
         });
 
         liveEditor.editor.on("change", function() {
@@ -84,8 +86,10 @@
             xhr.open("POST", "/save", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload = function () {
+                // TODO: display a dialog to the user with this info
                 if (xhr.status === 200) {
                     console.log("we're good to go");
+                    dirty = false;
                 } else {
                     console.log("something went wrong");
                 }
@@ -96,6 +100,13 @@
             var obj = { code: code, pid: pid };
             console.log(obj);
             xhr.send(JSON.stringify(obj));
+        };
+
+        var screenshotButton = document.getElementById("screenshotButton");
+        screenshotButton.onclick = function (e) {
+            liveEditor.getScreenshot(function (data) {
+                console.log("data.length = " + data.length);
+            });
         };
 
         window.addEventListener("beforeunload", function (e) {

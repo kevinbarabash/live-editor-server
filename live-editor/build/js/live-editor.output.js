@@ -364,8 +364,8 @@ window.LiveEditorOutput = Backbone.View.extend({
             this.sendChannelMessage = function(path, value) {
                 var xhr = new XMLHttpRequest();   // new HttpRequest instance
                 xhr.open("POST", path);
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 if (typeof value === "object") {
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                     xhr.send(JSON.stringify(value));
                 } else if (typeof value === "string") {
                     xhr.send(value);
@@ -488,10 +488,19 @@ window.LiveEditorOutput = Backbone.View.extend({
 
         // Take a screenshot of the output
         if (data.screenshot != null) {
+            var pid = data.pid;
             var screenshotSize = data.screenshotSize || 200;
             this.output.getScreenshot(screenshotSize, function(data) {
-                // Send back the screenshot data
-                this.postParent(data);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST',"/screenshot",true);
+                xhr.onload = function (e) {
+                    if (xhr.status === 200) {
+                        console.log("we're good to go");
+                    } else {
+                        console.log("something went wrong");
+                    }
+                };
+                xhr.send(JSON.stringify({ pid: pid, data: data }));
             }.bind(this));
         }
 

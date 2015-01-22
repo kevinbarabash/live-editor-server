@@ -16,6 +16,7 @@ def user_key(uid):
 class Program(ndb.Model):
     name = ndb.StringProperty()
     code = ndb.JsonProperty()
+    screenshot = ndb.BlobProperty()
 
 
 def authenticate(func):
@@ -61,6 +62,18 @@ class EditorPage(webapp2.RequestHandler):
     @authenticate
     def post(self):
         uid = users.get_current_user().user_id()    # it would be nice to inject if this possible
+
+        # Save a copy of the program with the id of the user
+        # this program doesn't show up in the list of user's program
+        # it's used to store the current state of whatever the user
+        # is editing so that when they reload /output on a different
+        # browser window they'll be able to view the last edit state
+        # without having to wait for the editor to push changes.
+        # See OutputPage:post in particular dealing with "connected" messages
+        body = json.loads(self.request.body)
+        if 'code' in body:
+            program = Program(id=uid, code=body)
+            program.put()
 
         # forward the message to the output
         channel.send_message(uid + "_output", self.request.body)
@@ -140,8 +153,6 @@ class SaveProgram(webapp2.RequestHandler):
         uid = users.get_current_user().user_id()
         body = json.loads(self.request.body)
 
-        print body
-
         if 'pid' in body:
             pid = int(body['pid'])
             program = Program.get_by_id(pid, parent=user_key(uid))
@@ -155,6 +166,38 @@ class SaveProgram(webapp2.RequestHandler):
                 program.put()
 
 
+class Screenshot(webapp2.RequestHandler):
+
+    @authenticate
+    def post(self):
+        uid = users.get_current_user().user_id()
+        body = json.loads(self.request.body)
+
+        if 'pid' in body:
+            print 'pid = %s' % body['pid']
+        else:
+            self.response.set_status(500)
+            self.response.out.write("pid wasn't sent as part of request")
+
+        if 'data' in body:
+            print 'len(data) = %d' % len(body['data'])
+        else:
+            self.response.set_status(500)
+            self.response.out.write("data wasn't sent as part of request")
+
+        pid = int(body['pid'])
+        data = body['data']
+        program = Program.get_by_id(pid, parent=user_key(uid))
+
+        if not program:
+            self.response.set_status(500)
+            self.response.out.write("couldn't retrieve program")
+        else:
+            program.screenshot = data.encode('ascii')
+            program.put()
+            print "sucessfully saved an image for program: %d" % pid
+
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
@@ -164,5 +207,6 @@ app = webapp2.WSGIApplication([
     ('/output', OutputPage),
     ('/programs', ProgramList),
     ('/create', CreateProgram),
-    ('/save', SaveProgram)
+    ('/save', SaveProgram),
+    ('/screenshot', Screenshot)
 ], debug=True)
