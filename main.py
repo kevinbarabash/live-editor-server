@@ -145,6 +145,7 @@ class CreateProgram(webapp2.RequestHandler):
             program.put()
 
             self.response.set_status(200)
+            self.response.out.write(program.key.id())
 
 
 class SaveProgram(webapp2.RequestHandler):
@@ -177,15 +178,17 @@ class Screenshot(webapp2.RequestHandler):
         program = Program.get_by_id(pid, parent=user_key(uid))
 
         if program:
-            # TODO: move this to the ingestion phase
-            data_uri = program.screenshot
-            comma_pos = data_uri.find(",")
-            _, head = data_uri[:comma_pos].split(":")
-            parts = head.split(";")
-            mime = parts[0]
-            data = program.screenshot[comma_pos + 1:]
-            self.response.headers['Content-Type'] = mime
-            self.response.out.write(binascii.a2b_base64(data))
+            if program.screenshot:
+                data_uri = program.screenshot
+                comma_pos = data_uri.find(",")
+                _, head = data_uri[:comma_pos].split(":")
+                parts = head.split(";")
+                mime = parts[0]
+                data = program.screenshot[comma_pos + 1:]
+                self.response.headers['Content-Type'] = mime
+                self.response.out.write(binascii.a2b_base64(data))
+            else:
+                self.redirect("/images/blank-200x200.png")
 
     @authenticate
     def post(self):

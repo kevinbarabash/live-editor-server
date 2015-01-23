@@ -11,6 +11,7 @@
 
         body {
             padding: 10px 20px 20px 20px;
+            font-family: sans-serif;
         }
 
         h1 {
@@ -29,7 +30,16 @@
             margin-bottom: 20px;
         }
 
-        li > div {
+        dialog.my_dialog {
+            border-width: 1px;
+            border-color: #666;
+        }
+
+        dialog.my_dialog input {
+            margin-left: 10px;
+        }
+
+        img.screenshot {
             display: inline-block;
             width: 200px;
             height: 200px;
@@ -48,9 +58,9 @@
 <h1>Program Listing</h1>
 
 <button id="new_button">New Program</button>
-<dialog>
+<dialog class="my_dialog">
     <div>
-        Name: <input type="text" id="program_name">
+        Program Name: <input type="text" id="program_name">
     </div>
     <br>
     <div>
@@ -62,8 +72,10 @@
 <ul>
     {% for program in programs %}
     <li>
-        <div><img src="/screenshot?pid={{ program.key.id() }}"></div><br>
-        <a href="/editor?pid={{ program.key.id() }}">{{ program.name }}</a>
+        <a href="/editor?pid={{ program.key.id() }}">
+            <img class="screenshot" src="/screenshot?pid={{ program.key.id() }}"><br>
+            {{ program.name }}
+        </a>
     </li>
     {% endfor %}
 </ul>

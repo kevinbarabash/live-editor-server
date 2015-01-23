@@ -81,6 +81,7 @@
     position: absolute;
     right: 10px;
     top: 4px;
+    pointer-events:all;
 }
 .tipbar .tipnav a {
     background: rgba(255, 255, 255, 0.2);
