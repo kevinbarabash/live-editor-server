@@ -28,10 +28,6 @@
         iframe {
             border: none;
         }
-
-        #saveButton {
-            margin-bottom: 5px;
-        }
     </style>
     <script>
         var token = "{{ token }}";
@@ -46,8 +42,6 @@
     </div>
     <h1>{{ title }}</h1>
     <div id="author">by {{ nickname }}</div>
-    <button id="saveButton">Save</button>
-    <button id="screenshotButton">Screenshot</button>
     <dialog class="my_dialog" id="screenshotDialog">
         <div class="message"></div>
         <br>
@@ -96,49 +90,10 @@
 
         ScratchpadAutosuggest.init(liveEditor.editor.editor);
 
-        // TODO: move this into live-editor.js and put the buttons in the template
-        var saveButton = document.getElementById("saveButton");
-        saveButton.onclick = function (e) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/save", true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.onload = function () {
-                // TODO: display a dialog to the user with this info
-                if (xhr.status === 200) {
-                    console.log("we're good to go");
-                    dirty = false;
-                } else {
-                    console.log("something went wrong");
-                }
-            };
-
-            var code = liveEditor.editor.editor.getSession().getValue();
-            var pid = "{{ pid }}";
-            var obj = { code: code, pid: pid };
-            console.log(obj);
-            xhr.send(JSON.stringify(obj));
-        };
-
-        var screenshotButton = document.getElementById("screenshotButton");
-        screenshotButton.onclick = function (e) {
-            liveEditor.getScreenshot(function (data) {
-                console.log("data.length = " + data.length);
-            });
-        };
-
         var screenshotDialog = document.getElementById("screenshotDialog");
         screenshotDialog.onclick = function (e) {
             screenshotDialog.close();
         };
-
-        window.addEventListener("beforeunload", function (e) {
-            if (dirty) {
-                var message = "You've edited your program.  Your changes will be lost if you don't save them";
-
-                (e || window.event).returnValue = message; //Gecko + IE
-                return message; //Gecko + Webkit, Safari, Chrome etc.
-            }
-        });
     </script>
 </body>
 </html>
