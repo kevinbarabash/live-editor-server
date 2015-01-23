@@ -34,7 +34,8 @@ class EditorPage(webapp2.RequestHandler):
 
     @authenticate
     def get(self):
-        uid = users.get_current_user().user_id()
+        user = users.get_current_user()
+        uid = user.user_id()
         pid = int(self.request.get("pid"))
 
         program = Program.get_by_id(pid, parent=user_key(uid))
@@ -54,7 +55,8 @@ class EditorPage(webapp2.RequestHandler):
                 'logout_url': users.create_logout_url(self.request.uri),
                 'code': code,
                 'pid': pid,
-                'title': program.name
+                'title': program.name,
+                'nickname': user.nickname()
             }
             self.response.out.write(template.render(template_values))
         else:
@@ -116,17 +118,17 @@ class ProgramList(webapp2.RequestHandler):
 
     @authenticate
     def get(self):
-        uid = users.get_current_user().user_id()
+        user = users.get_current_user()
+        uid = user.user_id()
         programs_query = Program.query(ancestor=user_key(uid))
         programs = programs_query.fetch(10)
-
-        for p in programs:
-            print p.key.id()
+        # TODO: add a show-more button if there's more
 
         template = jinja_environment.get_template("html/program_list.html")
         template_values = {
             'programs': programs,
-            'logout_url': users.create_logout_url(self.request.uri)
+            'logout_url': users.create_logout_url(self.request.uri),
+            'nickname': user.nickname()
         }
         self.response.out.write(template.render(template_values))
 
@@ -172,7 +174,9 @@ class Screenshot(webapp2.RequestHandler):
 
     @authenticate
     def get(self):
-        uid = users.get_current_user().user_id()
+        uid = self.request.get("uid")
+        if uid is "":
+            uid = users.get_current_user().user_id()
         pid = int(self.request.get("pid"))
 
         program = Program.get_by_id(pid, parent=user_key(uid))
@@ -220,6 +224,22 @@ class Screenshot(webapp2.RequestHandler):
             print "sucessfully saved an image for program: %d" % pid
 
 
+class AllPrograms(webapp2.RequestHandler):
+
+    @authenticate
+    def get(self):
+        query = Program.query()
+        programs = query.fetch(10)
+
+        filtered_programs = [p for p in programs if p.key.parent() is not None]
+
+        template = jinja_environment.get_template("html/all_programs.html")
+        template_values = {
+            'programs': filtered_programs
+        }
+        self.response.out.write(template.render(template_values))
+
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
@@ -227,8 +247,9 @@ jinja_environment = jinja2.Environment(
 app = webapp2.WSGIApplication([
     ('/editor', EditorPage),
     ('/output', OutputPage),
-    ('/programs', ProgramList),
+    ('/my_programs', ProgramList),
     ('/create', CreateProgram),
     ('/save', SaveProgram),
-    ('/screenshot', Screenshot)
+    ('/screenshot', Screenshot),
+    ('/all_programs', AllPrograms)
 ], debug=True)

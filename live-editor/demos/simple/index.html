@@ -14,7 +14,11 @@
 
         h1 {
             padding: 0;
-            margin: 10px 0 10px 0;
+            margin: 10px 0 0 0;
+        }
+
+        #author {
+            margin-bottom: 10px;
         }
 
         #sample-live-editor {
@@ -35,10 +39,11 @@
 </head>
 <body>
     <div>
-        <a href="/programs">Program List</a>
+        <a href="/my_programs">Program List</a>
         <a href="{{ logout_url }}" style="float:right;">logout</a>
     </div>
     <h1>{{ title }}</h1>
+    <div id="author">by {{ nickname }}</div>
     <button id="saveButton">Save</button>
     <button id="screenshotButton">Screenshot</button>
     <div id="sample-live-editor"></div>

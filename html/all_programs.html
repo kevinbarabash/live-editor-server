@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body {
+            padding: 10px 20px 20px 20px;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            padding: 0;
+            margin: 10px 0 10px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            float: left;
+            margin-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        img.screenshot {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            border: solid 1px gray;
+        }
+    </style>
+</head>
+<body>
+<h1>All Programs</h1>
+
+<ul>
+    {% for program in programs %}
+    <li>
+        <a href="/editor?pid={{ program.key.id() }}">
+            <img class="screenshot" src="/screenshot?pid={{ program.key.id() }}&uid={{ program.key.parent().id() }}"><br>
+            {{ program.name }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
