@@ -62,7 +62,7 @@
 <ul>
     {% for program in programs %}
     <li>
-        <div></div><br>
+        <div><img src="/screenshot?pid={{ program.key.id() }}"></div><br>
         <a href="/editor?pid={{ program.key.id() }}">{{ program.name }}</a>
     </li>
     {% endfor %}

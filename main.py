@@ -4,6 +4,7 @@ import jinja2
 import os
 import webapp2
 import json
+import binascii
 from google.appengine.api import channel
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -167,6 +168,24 @@ class SaveProgram(webapp2.RequestHandler):
 
 
 class Screenshot(webapp2.RequestHandler):
+
+    @authenticate
+    def get(self):
+        uid = users.get_current_user().user_id()
+        pid = int(self.request.get("pid"))
+
+        program = Program.get_by_id(pid, parent=user_key(uid))
+
+        if program:
+            # TODO: move this to the ingestion phase
+            data_uri = program.screenshot
+            comma_pos = data_uri.find(",")
+            _, head = data_uri[:comma_pos].split(":")
+            parts = head.split(";")
+            mime = parts[0]
+            data = program.screenshot[comma_pos + 1:]
+            self.response.headers['Content-Type'] = mime
+            self.response.out.write(binascii.a2b_base64(data))
 
     @authenticate
     def post(self):
