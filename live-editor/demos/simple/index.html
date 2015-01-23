@@ -36,6 +36,8 @@
     <script>
         var token = "{{ token }}";
     </script>
+    <link rel="stylesheet" href="dialog-polyfill/dialog-polyfill.css"/>
+    <script src="dialog-polyfill/dialog-polyfill.js"></script>
 </head>
 <body>
     <div>
@@ -46,6 +48,14 @@
     <div id="author">by {{ nickname }}</div>
     <button id="saveButton">Save</button>
     <button id="screenshotButton">Screenshot</button>
+    <dialog class="my_dialog" id="screenshotDialog">
+        <div class="message"></div>
+        <br>
+        <div>
+            <button class="okay">Okay</button>
+        </div>
+    </dialog>
+
     <div id="sample-live-editor"></div>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <!--<script src="/socket.io/socket.io.js"></script>-->
@@ -86,6 +96,7 @@
 
         ScratchpadAutosuggest.init(liveEditor.editor.editor);
 
+        // TODO: move this into live-editor.js and put the buttons in the template
         var saveButton = document.getElementById("saveButton");
         saveButton.onclick = function (e) {
             var xhr = new XMLHttpRequest();
@@ -113,6 +124,11 @@
             liveEditor.getScreenshot(function (data) {
                 console.log("data.length = " + data.length);
             });
+        };
+
+        var screenshotDialog = document.getElementById("screenshotDialog");
+        screenshotDialog.onclick = function (e) {
+            screenshotDialog.close();
         };
 
         window.addEventListener("beforeunload", function (e) {

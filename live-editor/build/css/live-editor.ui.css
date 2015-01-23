@@ -401,3 +401,16 @@ button.hilite {
     box-shadow: 0 0 20px green;
 }
 
+dialog.my_dialog {
+    border-width: 1px;
+    border-color: #666;
+}
+
+dialog.my_dialog input {
+    margin-left: 10px;
+}
+
+dialog.my_dialog button {
+    float: right;
+    margin-left: 10px;
+}

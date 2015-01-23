@@ -199,6 +199,8 @@ class Screenshot(webapp2.RequestHandler):
         uid = users.get_current_user().user_id()
         body = json.loads(self.request.body)
 
+        status = 'failure'
+
         if 'pid' in body:
             print 'pid = %s' % body['pid']
         else:
@@ -223,6 +225,11 @@ class Screenshot(webapp2.RequestHandler):
             program.put()
             print "sucessfully saved an image for program: %d" % pid
 
+            status = 'success'
+
+        msg = {'screenshot': status}
+        channel.send_message(uid + "_editor", json.dumps(msg))
+
 
 class AllPrograms(webapp2.RequestHandler):
 
@@ -240,6 +247,13 @@ class AllPrograms(webapp2.RequestHandler):
         self.response.out.write(template.render(template_values))
 
 
+class Redirect(webapp2.RequestHandler):
+
+    @authenticate
+    def get(self):
+        self.redirect('/my_programs')
+
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
@@ -251,5 +265,6 @@ app = webapp2.WSGIApplication([
     ('/create', CreateProgram),
     ('/save', SaveProgram),
     ('/screenshot', Screenshot),
-    ('/all_programs', AllPrograms)
+    ('/all_programs', AllPrograms),
+    ('/', Redirect)
 ], debug=True)

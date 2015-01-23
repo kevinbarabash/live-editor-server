@@ -1856,6 +1856,21 @@ window.LiveEditor = Backbone.View.extend({
         if (data.log) {
             this.record.log.apply(this.record, data.log);
         }
+        
+        if (data.screenshot) {
+            var status = data.screenshot;
+            var screenshotDialog = document.getElementById("screenshotDialog");
+            if (screenshotDialog) {
+                var msg;
+                if (status === "success") {
+                    msg = "Screenshot successfully saved";
+                } else {
+                    msg = "Screenshot could not be saved at the current time.  Try again later.";
+                }
+                screenshotDialog.querySelector("div.message").innerText = msg;
+                screenshotDialog.showModal();
+            }
+        }
     },
 
     markDirty: function(){
