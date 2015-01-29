@@ -37,12 +37,24 @@
 </head>
 <body>
     <div>
-        <a href="/my_programs">Program List</a>
+        <a href="/my_programs">My Programs</a>
+        <a href="/all_programs">All Programs</a>
         <a href="{{ logout_url }}" style="float:right;">logout</a>
     </div>
     <h1>{{ title }}</h1>
-    <div id="author">by {{ nickname }}</div>
+    <!--<div id="author">by {{ nickname }}</div>-->
+
+    <!-- screenshot notification -->
     <dialog class="my_dialog" id="screenshotDialog">
+        <div class="message"></div>
+        <br>
+        <div>
+            <button class="okay">Okay</button>
+        </div>
+    </dialog>
+
+    <!-- save notification -->
+    <dialog class="my_dialog" id="saveDialog">
         <div class="message"></div>
         <br>
         <div>
@@ -62,6 +74,8 @@
     <script src="../../build/js/live-editor.editor_ace.js"></script>
 
     <script>
+        var allowScreenshot = {{ allowScreenshot }};
+        var allowSave = {{ allowSave }};
         var code = "{{ code }}";
         if (code === "") {
             code = window.localStorage["test-code"] || "rect(10, 10, 100, 100);";
@@ -93,6 +107,11 @@
         var screenshotDialog = document.getElementById("screenshotDialog");
         screenshotDialog.onclick = function (e) {
             screenshotDialog.close();
+        };
+
+        var saveDialog = document.getElementById("saveDialog");
+        saveDialog.onclick = function (e) {
+            saveDialog.close();
         };
     </script>
 </body>

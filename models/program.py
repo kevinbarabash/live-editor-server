@@ -2,6 +2,8 @@ __author__ = 'kevin'
 
 from google.appengine.ext import ndb
 
+# TODO create a Model that contains user information like nickname so that
+# we can access it without having to be logged in as that user
 
 class Program(ndb.Model):
     """

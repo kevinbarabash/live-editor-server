@@ -30,6 +30,13 @@ class Editor(webapp2.RequestHandler):
 
         code = program.code.replace("\n", "\\n").replace("\"", "\\\"")
 
+        if uid == program.creator:
+            allowSave = "true"
+            allowScreenshot = "true"
+        else:
+            allowSave = "false"
+            allowScreenshot = "false"
+
         if program:
             path = "live-editor/demos/simple/index.html"
             template = jinja_environment.get_template(path)
@@ -40,7 +47,10 @@ class Editor(webapp2.RequestHandler):
                 'code': code,
                 'pid': pid,
                 'title': program.name,
-                'nickname': user.nickname()
+                'creator': program.creator,
+                'nickname': user.nickname(),
+                'allowSave': allowSave,
+                'allowScreenshot': allowScreenshot
             }
             self.response.out.write(template.render(template_values))
         else:

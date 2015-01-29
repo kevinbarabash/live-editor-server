@@ -3,12 +3,11 @@ Server that allows live-editor to communicate with the output canvas in a
 separate tab, window, browser, or device.
 
 ## Demo ##
-Make sure you sign in using the same user account when opening both links.  
-It may take a little bit of time for the program to start running the output 
-window.  If the editor is empty, that's okay... just write some code.  :)
+After creating a program using the "Open Output Window" to see the changes
+in another window.  You can also use the output URL in another winodw or
+on another device.
 
-- <a href="http://elite-clover-821.appspot.com/editor" target="_blank">editor</a>
-- <a href="http://elite-clover-821.appspot.com/output" target="_blank">output</a>
+- <a href="http://elite-clover-821.appspot.com/" target="_blank">demo</a>
 
 ## Implementation Details ##
 The server is written in Python.  It uses Google App Engine to serve files and
