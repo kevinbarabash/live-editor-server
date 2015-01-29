@@ -39,8 +39,8 @@
 <ul>
     {% for program in programs %}
     <li>
-        <a href="/editor?pid={{ program.key.id() }}">
-            <img class="screenshot" src="/screenshot?pid={{ program.key.id() }}&uid={{ program.key.parent().id() }}"><br>
+        <a href="/editor/{{ program.key.id() }}">
+            <img class="screenshot" src="/screenshot/{{ program.key.id() }}/?uid={{ program.key.parent().id() }}"><br>
             {{ program.name }}
         </a>
     </li>

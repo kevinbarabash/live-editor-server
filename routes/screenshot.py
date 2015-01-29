@@ -3,7 +3,7 @@ __author__ = 'kevin'
 import webapp2
 import binascii
 import json
-from google.appengine.api import channel
+from urlparse import urlparse
 
 from models import *
 from routes import *
@@ -16,7 +16,15 @@ class Screenshot(webapp2.RequestHandler):
         uid = self.request.get("uid")
         if uid is "":
             uid = users.get_current_user().user_id()
-        pid = int(self.request.get("pid"))
+
+        path = urlparse(self.request.url).path
+        parts = path[1:].split("/")
+
+        if len(parts) < 2:
+            self.response.set_status(500)
+            self.response.out.write("program id not specified in URL")
+
+        pid = int(parts[1])
 
         program = Program.get_by_id(pid, parent=user_key(uid))
 

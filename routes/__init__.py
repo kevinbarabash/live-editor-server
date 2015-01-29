@@ -3,6 +3,7 @@ __author__ = 'kevin'
 import jinja2
 import os
 from google.appengine.api import users
+from google.appengine.api import channel
 
 
 def authenticate(func):

@@ -2,7 +2,7 @@ __author__ = 'kevin'
 
 import webapp2
 import json
-from google.appengine.api import channel
+from urlparse import urlparse
 
 from models import *
 from routes import *
@@ -14,9 +14,15 @@ class Editor(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         uid = user.user_id()
-        pid = int(self.request.get("pid"))
+        path = urlparse(self.request.url).path
+        parts = path[1:].split("/")
 
-        program = Program.get_by_id(pid, parent=user_key(uid))
+        if len(parts) < 2:
+            self.response.set_status(500)
+            self.response.out.write("program id not specified in URL")
+
+        pid = int(parts[1])
+        program = Program.get_by_id(pid) #, parent=user_key(uid))
 
         # equivalent method:
         # key = ndb.Key('Account', uid, 'Program', pid)

@@ -53,7 +53,7 @@ createButton.onclick = function (e) {
     if (xhr.status === 200) {
       console.log("we're good to go");
       var pid = xhr.responseText;
-      window.location.href = "/editor?pid=" + pid;
+      window.location.href = "/editor/" + pid;
     } else {
       console.log("something wen't wrong");
     }

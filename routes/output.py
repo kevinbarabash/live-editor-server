@@ -2,7 +2,6 @@ __author__ = 'kevin'
 
 import webapp2
 import json
-from google.appengine.api import channel
 
 from models import *
 from routes import *

@@ -17,17 +17,23 @@ class Echo(webapp2.RequestHandler):
 
     @authenticate
     def get(self):
-        o = urlparse(self.request.url)
-        self.response.out.write("echo: " + o.path)
+        path = urlparse(self.request.url).path
+        parts = path[1:].split("/")
+        if len(parts) == 2:
+            eid = parts[1]
+            self.response.out.write("echo: " + eid)
+
 
 
 # TODO migrate to Cloud Endpoints
 app = webapp2.WSGIApplication([
+    ('/editor/.*', Editor),
     ('/editor', Editor),
     ('/output', Output),
     ('/my_programs', MyPrograms),
     ('/create', CreateProgram),
     ('/save', SaveProgram),
+    ('/screenshot/.*', Screenshot),
     ('/screenshot', Screenshot),
     ('/all_programs', AllPrograms),
     ('/', Redirect),
