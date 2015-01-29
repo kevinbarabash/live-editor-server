@@ -11,8 +11,7 @@ class MyPrograms(webapp2.RequestHandler):
     @authenticate
     def get(self):
         user = users.get_current_user()
-        uid = user.user_id()
-        programs_query = Program.query(ancestor=user_key(uid))
+        programs_query = Program.query(Program.creator == user.user_id())
         programs = programs_query.fetch(10)
         # TODO: add a show-more button if there's more
 

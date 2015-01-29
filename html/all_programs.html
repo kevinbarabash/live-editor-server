@@ -40,7 +40,7 @@
     {% for program in programs %}
     <li>
         <a href="/editor/{{ program.key.id() }}">
-            <img class="screenshot" src="/screenshot/{{ program.key.id() }}/?uid={{ program.key.parent().id() }}"><br>
+            <img class="screenshot" src="/screenshot/{{ program.key.id() }}"><br>
             {{ program.name }}
         </a>
     </li>

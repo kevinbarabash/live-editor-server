@@ -13,10 +13,6 @@ class Screenshot(webapp2.RequestHandler):
 
     @authenticate
     def get(self):
-        uid = self.request.get("uid")
-        if uid is "":
-            uid = users.get_current_user().user_id()
-
         path = urlparse(self.request.url).path
         parts = path[1:].split("/")
 
@@ -26,7 +22,7 @@ class Screenshot(webapp2.RequestHandler):
 
         pid = int(parts[1])
 
-        program = Program.get_by_id(pid, parent=user_key(uid))
+        program = Program.get_by_id(pid)
 
         if program:
             if program.screenshot:
@@ -64,7 +60,7 @@ class Screenshot(webapp2.RequestHandler):
 
         pid = int(body['pid'])
         data = body['data']
-        program = Program.get_by_id(pid, parent=user_key(uid))
+        program = Program.get_by_id(pid)
 
         if not program:
             self.response.set_status(500)

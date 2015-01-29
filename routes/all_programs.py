@@ -10,13 +10,11 @@ class AllPrograms(webapp2.RequestHandler):
 
     @authenticate
     def get(self):
-        query = Program.query()
+        query = Program.query(Program.creator != None)
         programs = query.fetch(10)
-
-        filtered_programs = [p for p in programs if p.key.parent() is not None]
 
         template = jinja_environment.get_template("html/all_programs.html")
         template_values = {
-            'programs': filtered_programs
+            'programs': programs
         }
         self.response.out.write(template.render(template_values))
